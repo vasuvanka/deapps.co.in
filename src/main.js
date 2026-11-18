@@ -247,19 +247,26 @@ function initDeLauncherSandbox() {
     const q = query.toLowerCase().trim();
 
     if (!q) {
-      intentStatusEl.textContent = 'DETERMINISTIC RETRIEVAL (<100ms)';
+      intentStatusEl.textContent = 'PANDU READY · "HEY PANDU" / "PANDU"';
       intentStatusEl.style.borderColor = 'var(--champagne-base)';
       intentStatusEl.style.color = 'var(--champagne-light)';
-      intentJsonEl.textContent = `// Type or click a natural language preset above to inspect the on-device intent schema\n// Model: FunctionGemma 270M candidate running on LiteRT-LM (100% on-device)`;
+      intentJsonEl.textContent = `// Assistant: Pandu (Official personal assistant of deLauncher)\n// Wake-word engine: Local acoustic model supporting "Pandu" and "Hey Pandu"\n// Model: FunctionGemma 270M candidate on LiteRT-LM (100% on-device, 0 telemetry)`;
       return;
     }
 
-    if (q.includes('dial') || q.includes('call') || q.includes('arun')) {
-      intentStatusEl.textContent = 'INTENT: CALL_CONTACT · ASSIST';
+    const hasHeyPandu = q.includes('hey pandu');
+    const hasPandu = q.includes('pandu');
+    const wakeWord = hasHeyPandu ? 'Hey Pandu' : (hasPandu ? 'Pandu' : null);
+    const cleanQ = q.replace(/^hey pandu,?\s*/i, '').replace(/^pandu,?\s*/i, '').trim();
+
+    if (cleanQ.includes('dial') || cleanQ.includes('call') || cleanQ.includes('arun') || q.includes('arun')) {
+      intentStatusEl.textContent = wakeWord ? `PANDU VOICE TRIGGER ("${wakeWord}") · CALL_CONTACT` : 'INTENT: CALL_CONTACT · ASSIST';
       intentStatusEl.style.borderColor = '#F4A282';
       intentStatusEl.style.color = '#F4A282';
       intentJsonEl.textContent = JSON.stringify({
         schema_version: "1.0",
+        assistant: "Pandu",
+        wake_word_detected: wakeWord,
         intent: "CALL_CONTACT",
         parameters: {
           contact_name: "Arun",
@@ -271,12 +278,14 @@ function initDeLauncherSandbox() {
         action_policy: "OPEN_SYSTEM_DIALER",
         runtime: "FunctionGemma 270M (LiteRT-LM On-Device)"
       }, null, 2);
-    } else if (q.includes('alarm') || q.includes('6') || q.includes('timer')) {
-      intentStatusEl.textContent = 'INTENT: CREATE_ALARM · ASSIST';
+    } else if (cleanQ.includes('alarm') || cleanQ.includes('6') || cleanQ.includes('timer')) {
+      intentStatusEl.textContent = wakeWord ? `PANDU VOICE TRIGGER ("${wakeWord}") · CREATE_ALARM` : 'INTENT: CREATE_ALARM · ASSIST';
       intentStatusEl.style.borderColor = '#F4A282';
       intentStatusEl.style.color = '#F4A282';
       intentJsonEl.textContent = JSON.stringify({
         schema_version: "1.0",
+        assistant: "Pandu",
+        wake_word_detected: wakeWord,
         intent: "CREATE_ALARM",
         parameters: {
           time: "06:00",
@@ -290,12 +299,14 @@ function initDeLauncherSandbox() {
         action_policy: "ACTION_REGISTRY_VERIFIED",
         runtime: "FunctionGemma 270M (LiteRT-LM On-Device)"
       }, null, 2);
-    } else if (q.includes('wifi') || q.includes('setting')) {
-      intentStatusEl.textContent = 'INTENT: OPEN_WIFI_SETTINGS · ASK';
+    } else if (cleanQ.includes('wifi') || cleanQ.includes('setting')) {
+      intentStatusEl.textContent = wakeWord ? `PANDU VOICE TRIGGER ("${wakeWord}") · SETTINGS` : 'INTENT: OPEN_WIFI_SETTINGS · ASK';
       intentStatusEl.style.borderColor = 'var(--champagne-base)';
       intentStatusEl.style.color = 'var(--champagne-light)';
       intentJsonEl.textContent = JSON.stringify({
         schema_version: "1.0",
+        assistant: "Pandu",
+        wake_word_detected: wakeWord,
         intent: "OPEN_WIFI_SETTINGS",
         parameters: {},
         confidence: 0.99,
@@ -304,12 +315,14 @@ function initDeLauncherSandbox() {
         action_policy: "SETTINGS_REDIRECT (Public Android API)",
         runtime: "FunctionGemma 270M (LiteRT-LM On-Device)"
       }, null, 2);
-    } else if (q.includes('pdf') || q.includes('find') || q.includes('file')) {
-      intentStatusEl.textContent = 'PROVIDER: FILE_SEARCH_PROVIDER · ASK';
+    } else if (cleanQ.includes('pdf') || cleanQ.includes('find') || cleanQ.includes('file')) {
+      intentStatusEl.textContent = wakeWord ? `PANDU VOICE TRIGGER ("${wakeWord}") · SEARCH_FILES` : 'PROVIDER: FILE_SEARCH_PROVIDER · ASK';
       intentStatusEl.style.borderColor = '#9AD3BC';
       intentStatusEl.style.color = '#9AD3BC';
       intentJsonEl.textContent = JSON.stringify({
         schema_version: "1.0",
+        assistant: "Pandu",
+        wake_word_detected: wakeWord,
         intent: "SEARCH_FILES",
         parameters: {
           file_type: "pdf",
@@ -321,12 +334,14 @@ function initDeLauncherSandbox() {
         search_provider: "FileSearchProvider (Room SQLite)",
         runtime: "Deterministic Provider Pipeline"
       }, null, 2);
-    } else if (q.includes('calm') || q.includes('mode') || q.includes('work') || q.includes('focus')) {
-      intentStatusEl.textContent = 'STATE: SET_FOCUS_PROFILE · ASK';
+    } else if (cleanQ.includes('calm') || cleanQ.includes('mode') || cleanQ.includes('work') || cleanQ.includes('focus')) {
+      intentStatusEl.textContent = wakeWord ? `PANDU VOICE TRIGGER ("${wakeWord}") · FOCUS_PROFILE` : 'STATE: SET_FOCUS_PROFILE · ASK';
       intentStatusEl.style.borderColor = '#C3ADF4';
       intentStatusEl.style.color = '#C3ADF4';
       intentJsonEl.textContent = JSON.stringify({
         schema_version: "1.0",
+        assistant: "Pandu",
+        wake_word_detected: wakeWord,
         intent: "SET_FOCUS_PROFILE",
         parameters: {
           profile: "Calm",
@@ -340,14 +355,16 @@ function initDeLauncherSandbox() {
         runtime: "Deterministic Fallback Router"
       }, null, 2);
     } else {
-      intentStatusEl.textContent = 'DETERMINISTIC RETRIEVAL (<100ms)';
+      intentStatusEl.textContent = wakeWord ? `PANDU VOICE TRIGGER ("${wakeWord}")` : 'DETERMINISTIC RETRIEVAL (<100ms)';
       intentStatusEl.style.borderColor = 'var(--champagne-base)';
       intentStatusEl.style.color = 'var(--champagne-light)';
       intentJsonEl.textContent = JSON.stringify({
         schema_version: "1.0",
+        assistant: "Pandu",
+        wake_word_detected: wakeWord,
         intent: "SEARCH_APP_OR_ENTITY",
         parameters: {
-          query: q,
+          query: cleanQ || q,
           fuzzy_match: true
         },
         confidence: 1.0,
@@ -363,9 +380,12 @@ function initDeLauncherSandbox() {
     updateIntentDisplay(query);
 
     const lowerQuery = query.toLowerCase().trim();
+    const cleanQ = lowerQuery.replace(/^hey pandu,?\s*/i, '').replace(/^pandu,?\s*/i, '').trim();
+
     const filtered = launcherData.filter(item => {
       const matchCat = (activeCategory === 'all') || (item.category === activeCategory) || (activeCategory === 'files' && item.category === 'files');
-      const matchText = !lowerQuery || item.title.toLowerCase().includes(lowerQuery) || item.subtitle.toLowerCase().includes(lowerQuery) || (lowerQuery.includes('dial') && item.id === 'arun') || (lowerQuery.includes('alarm') && item.id === 'alarm_6am') || (lowerQuery.includes('wifi') && item.id === 'wifi') || (lowerQuery.includes('calm') && item.id === 'calm_profile') || (lowerQuery.includes('pdf') && item.id === 'pdf_doc');
+      const textToSearch = cleanQ || lowerQuery;
+      const matchText = !textToSearch || item.title.toLowerCase().includes(textToSearch) || item.subtitle.toLowerCase().includes(textToSearch) || (textToSearch.includes('dial') && item.id === 'arun') || (textToSearch.includes('call') && item.id === 'arun') || (textToSearch.includes('alarm') && item.id === 'alarm_6am') || (textToSearch.includes('wifi') && item.id === 'wifi') || (textToSearch.includes('calm') && item.id === 'calm_profile') || (textToSearch.includes('pdf') && item.id === 'pdf_doc');
       return matchCat && matchText;
     });
 

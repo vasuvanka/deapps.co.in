@@ -175,7 +175,7 @@
                       <circle cx="11" cy="11" r="8"/>
                       <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                     </svg>
-                    <span>Search anything…</span>
+                    <span>"Hey Pandu" or search…</span>
                   </div>
 
                   <div class="dl-dock-apps">
@@ -184,8 +184,8 @@
                       <span class="dl-app-lbl">Vault</span>
                     </div>
                     <div class="dl-dock-item">
-                      <div class="dl-app-tile">✦</div>
-                      <span class="dl-app-lbl">Assistant</span>
+                      <div class="dl-app-tile" style="color: var(--champagne-light);">✦</div>
+                      <span class="dl-app-lbl" style="color: var(--champagne-light);">Pandu</span>
                     </div>
                     <div class="dl-dock-item">
                       <div class="dl-app-tile">🔐</div>
@@ -554,7 +554,7 @@
       <div class="arch-tabs-container">
         <div class="arch-tabs-nav" role="tablist" aria-label="Technical architecture pillars">
           <button class="arch-tab-btn active" role="tab" aria-selected="true" data-tab="assistant-modes">
-            <span>01. Balanced Assistant</span>
+            <span>01. Pandu: Assistant & Wake-Word</span>
           </button>
           <button class="arch-tab-btn" role="tab" aria-selected="false" data-tab="ondevice-ai">
             <span>02. On-Device AI Engine</span>
@@ -568,14 +568,20 @@
         </div>
 
         <div class="arch-tabs-content">
-          <!-- Tab 1: Balanced Assistant -->
+          <!-- Tab 1: Balanced Assistant & Pandu Identity -->
           <div class="arch-tab-pane active" id="pane-assistant-modes">
             <div class="arch-pane-grid">
               <div>
-                <span class="label-mono" style="color: var(--champagne-light);">HUMAN-CENTRIC COGNITIVE MODEL</span>
-                <h3 class="headline-md" style="margin-top: 4px; margin-bottom: 0.75rem;">Four Modes. Zero Autonomous Surprises.</h3>
-                <p class="body-md" style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.25rem;">
-                  Most "AI phones" act like unpredictable chatbots that hallucinate or execute background actions without permission. deLauncher implements a strict four-mode policy where the user is always in sovereign control.
+                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 4px; flex-wrap: wrap;">
+                  <span class="label-mono" style="color: var(--champagne-light);">ASSISTANT IDENTITY · PANDU</span>
+                  <span class="wake-word-badge">🎙️ "Pandu" &amp; "Hey Pandu"</span>
+                </div>
+                <h3 class="headline-md" style="margin-top: 4px; margin-bottom: 0.75rem;">Meet Pandu: Calm, Balanced &amp; Sovereign.</h3>
+                <p class="body-md" style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 0.75rem;">
+                  <strong>Pandu</strong> is the official personal assistant of deLauncher. Rather than an intrusive, always-recording cloud chatbot, Pandu serves as an intelligent, privacy-first interface between you and your smartphone.
+                </p>
+                <p class="body-sm" style="color: var(--text-secondary); line-height: 1.55; margin-bottom: 1.25rem;">
+                  <strong>Local Wake-Word Engine:</strong> Pandu supports dual wake-words—<strong>"Pandu"</strong> and <strong>"Hey Pandu"</strong>. Detection runs 100% on-device through an offline acoustic model that activates voice search without uploading ambient audio to cloud servers.
                 </p>
                 <div class="modes-table-wrap">
                   <table class="modes-table" aria-label="Balanced Assistant Operational Modes">
@@ -879,13 +885,16 @@
               <div class="dl-search-sandbox">
                 <!-- Preset Command Suggestions -->
                 <div class="capsule-quick-presets">
-                  <span class="caption">Try natural language commands:</span>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 4px;">
+                    <span class="caption">Try voice wake-words or natural language:</span>
+                    <span class="wake-word-badge">🎙️ "Pandu" &amp; "Hey Pandu"</span>
+                  </div>
                   <div class="quick-preset-chips">
-                    <button class="preset-chip" data-query="dial arun">"dial arun"</button>
-                    <button class="preset-chip" data-query="set alarm for 6 AM">"alarm 6am"</button>
+                    <button class="preset-chip" data-query="Hey Pandu, call Arun">"Hey Pandu, call Arun"</button>
+                    <button class="preset-chip" data-query="Pandu, set alarm 6am">"Pandu, alarm 6am"</button>
+                    <button class="preset-chip" data-query="Hey Pandu, calm mode">"Hey Pandu, calm mode"</button>
                     <button class="preset-chip" data-query="open wifi settings">"open wifi"</button>
                     <button class="preset-chip" data-query="find downloaded pdf">"find pdf"</button>
-                    <button class="preset-chip" data-query="calm mode">"calm mode"</button>
                   </div>
                 </div>
 
@@ -895,7 +904,7 @@
                     <circle cx="11" cy="11" r="8"/>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                   </svg>
-                  <input type="text" id="dlSearchInput" class="command-capsule-input" placeholder="Search or command… (e.g. 'dial arun', 'open wifi', 'calc')" aria-label="Simulate deLauncher search">
+                  <input type="text" id="dlSearchInput" class="command-capsule-input" placeholder='"Hey Pandu" or type command… (e.g. "Hey Pandu, call Arun", "open wifi")' aria-label="Simulate deLauncher search">
                 </div>
 
                 <!-- Live TRD Intent Schema Inspector Display -->
@@ -936,12 +945,19 @@
               <span class="brand-domain">deLauncher · Android System Launcher</span>
             </div>
             <h2 id="delauncher-heading" class="product-heading">The quiet luxury launcher.</h2>
-            <p class="product-subheading">Calm aesthetics, bloat-free controls, and on-device intelligent assistance.</p>
+            <p class="product-subheading">Calm aesthetics, bloat-free controls, and Pandu on-device personal assistance.</p>
             <p class="product-lead-text">
-              Engineered natively in Kotlin with Jetpack Compose for one-handed reach and zero cognitive fatigue. deLauncher eliminates colorful icon clutter, badged notification anxiety, and endless widget grids in favor of crisp architectural typography and fluid search.
+              Engineered natively in Kotlin with Jetpack Compose for one-handed reach and zero cognitive fatigue. deLauncher integrates <strong>Pandu</strong>, our discreet personal assistant, to help you take action in fewer steps without surveillance.
             </p>
 
             <div class="features-list">
+              <div class="feature-bullet">
+                <div class="feature-bullet-icon">✦</div>
+                <div class="feature-bullet-content">
+                  <strong>Pandu: On-Device Personal Assistant</strong>
+                  <span>Supports dual wake-words <em>"Pandu"</em> and <em>"Hey Pandu"</em> via a local acoustic engine, plus unified natural language search.</span>
+                </div>
+              </div>
               <div class="feature-bullet">
                 <div class="feature-bullet-icon">✓</div>
                 <div class="feature-bullet-content">

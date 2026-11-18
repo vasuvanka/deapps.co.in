@@ -2313,6 +2313,20 @@ dialog::backdrop {
   border: 1px solid var(--surface-border);
 }
 
+.wake-word-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--champagne-container);
+  border: 1px solid var(--champagne-base);
+  color: var(--champagne-light);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
 .upcoming-card {
   opacity: 0.88;
   border-style: dashed;
