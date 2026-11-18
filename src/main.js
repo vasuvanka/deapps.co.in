@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileNavigation();
   initHeroDeviceSwitcher();
   initEcosystemNodes();
+  initArchitectureTabs();
   initOpenPauseSimulator();
   initDeLauncherSandbox();
   initDeMusicPlayer();
@@ -182,9 +183,42 @@ function updateWinsDisplay(heroEl, sandboxEl) {
 }
 
 /* ==========================================================================
-   3. deLauncher Command Capsule Sandbox
+   2.5 Architecture Explorer Tabs
+   ========================================================================== */
+function initArchitectureTabs() {
+  const tabButtons = document.querySelectorAll('.arch-tab-btn');
+  const panes = document.querySelectorAll('.arch-tab-pane');
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetTab = btn.getAttribute('data-tab');
+
+      tabButtons.forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      panes.forEach(p => p.classList.remove('active'));
+
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+
+      const activePane = document.getElementById(`pane-${targetTab}`);
+      if (activePane) {
+        activePane.classList.add('active');
+      }
+    });
+  });
+}
+
+/* ==========================================================================
+   3. deLauncher Command Capsule Sandbox (TRD FunctionGemma Intent Simulator)
    ========================================================================== */
 const launcherData = [
+  { id: 'arun', title: 'Arun', subtitle: 'Mobile · +91 98400 12345', category: 'people', actions: ['Call', 'Message', 'WhatsApp'] },
+  { id: 'alarm_6am', title: 'Set Alarm for 6:00 AM', subtitle: 'Clock Provider · Morning Focus', category: 'actions', actions: ['Create Alarm'] },
+  { id: 'wifi', title: 'Wi-Fi Settings', subtitle: 'System Settings · Connectivity', category: 'actions', actions: ['Open Settings'] },
+  { id: 'pdf_doc', title: 'deSuite-Architecture-TRD.pdf', subtitle: 'Local Document · Downloads (2.4 MB)', category: 'files', actions: ['Open', 'Share'] },
+  { id: 'calm_profile', title: 'Activate Calm Mode', subtitle: 'Focus Profile · Intentional Home', category: 'actions', actions: ['Activate Profile'] },
   { id: 'police', title: 'Police', subtitle: 'Emergency Service · 100', category: 'people', actions: ['Call', 'SMS', 'WhatsApp', 'Pay'] },
   { id: 'phone', title: 'Dial Pad', subtitle: 'Call & WhatsApp unsaved numbers', category: 'actions', actions: ['Open Dial Pad'] },
   { id: 'camera', title: 'Camera', subtitle: 'Utility · Instant Capture', category: 'apps', actions: ['Open', 'Pro Mode'] },
@@ -192,7 +226,7 @@ const launcherData = [
   { id: 'calendar', title: 'Calendar', subtitle: 'Schedule · Nov 18', category: 'apps', actions: ['Agenda', 'Add Event'] },
   { id: 'music', title: 'deMusic', subtitle: 'Offline Audio Sanctuary', category: 'apps', actions: ['Play Sanctuary', 'Queue'] },
   { id: 'openpause', title: 'OpenPause', subtitle: 'Mindful Gatekeeper · Active', category: 'apps', actions: ['Settings', 'Stats'] },
-  { id: 'vault', title: 'App Vault', subtitle: 'Productivity · On-Device', category: 'apps', actions: ['Open'] },
+  { id: 'vault', title: 'deVault & App Vault', subtitle: 'Productivity · On-Device', category: 'apps', actions: ['Open'] },
   { id: 'work_notes', title: 'Q4 Product Roadmap.md', subtitle: 'Local Document · 48 KB', category: 'files', actions: ['View', 'Edit'] }
 ];
 
@@ -201,16 +235,137 @@ function initDeLauncherSandbox() {
   const resultsContainer = document.getElementById('dlSearchResults');
   const filterChips = document.querySelectorAll('.filter-chip');
   const bottomCapsule = document.getElementById('dlBottomActionCapsule');
+  const intentStatusEl = document.getElementById('dlIntentStatus');
+  const intentJsonEl = document.getElementById('dlIntentJson');
+  const presetChips = document.querySelectorAll('.preset-chip');
 
   let activeCategory = 'all';
+
+  function updateIntentDisplay(query = '') {
+    if (!intentJsonEl || !intentStatusEl) return;
+
+    const q = query.toLowerCase().trim();
+
+    if (!q) {
+      intentStatusEl.textContent = 'DETERMINISTIC RETRIEVAL (<100ms)';
+      intentStatusEl.style.borderColor = 'var(--champagne-base)';
+      intentStatusEl.style.color = 'var(--champagne-light)';
+      intentJsonEl.textContent = `// Type or click a natural language preset above to inspect the on-device intent schema\n// Model: FunctionGemma 270M candidate running on LiteRT-LM (100% on-device)`;
+      return;
+    }
+
+    if (q.includes('dial') || q.includes('call') || q.includes('arun')) {
+      intentStatusEl.textContent = 'INTENT: CALL_CONTACT · ASSIST';
+      intentStatusEl.style.borderColor = '#F4A282';
+      intentStatusEl.style.color = '#F4A282';
+      intentJsonEl.textContent = JSON.stringify({
+        schema_version: "1.0",
+        intent: "CALL_CONTACT",
+        parameters: {
+          contact_name: "Arun",
+          matched_number: "+91 98400 12345"
+        },
+        confidence: 0.96,
+        requires_confirmation: true,
+        mode: "ASSIST (Confirmation Required)",
+        action_policy: "OPEN_SYSTEM_DIALER",
+        runtime: "FunctionGemma 270M (LiteRT-LM On-Device)"
+      }, null, 2);
+    } else if (q.includes('alarm') || q.includes('6') || q.includes('timer')) {
+      intentStatusEl.textContent = 'INTENT: CREATE_ALARM · ASSIST';
+      intentStatusEl.style.borderColor = '#F4A282';
+      intentStatusEl.style.color = '#F4A282';
+      intentJsonEl.textContent = JSON.stringify({
+        schema_version: "1.0",
+        intent: "CREATE_ALARM",
+        parameters: {
+          time: "06:00",
+          am_pm: "AM",
+          label: "Morning Focus",
+          skip_ui_if_confirmed: true
+        },
+        confidence: 0.98,
+        requires_confirmation: false,
+        mode: "ASSIST",
+        action_policy: "ACTION_REGISTRY_VERIFIED",
+        runtime: "FunctionGemma 270M (LiteRT-LM On-Device)"
+      }, null, 2);
+    } else if (q.includes('wifi') || q.includes('setting')) {
+      intentStatusEl.textContent = 'INTENT: OPEN_WIFI_SETTINGS · ASK';
+      intentStatusEl.style.borderColor = 'var(--champagne-base)';
+      intentStatusEl.style.color = 'var(--champagne-light)';
+      intentJsonEl.textContent = JSON.stringify({
+        schema_version: "1.0",
+        intent: "OPEN_WIFI_SETTINGS",
+        parameters: {},
+        confidence: 0.99,
+        requires_confirmation: false,
+        mode: "ASK",
+        action_policy: "SETTINGS_REDIRECT (Public Android API)",
+        runtime: "FunctionGemma 270M (LiteRT-LM On-Device)"
+      }, null, 2);
+    } else if (q.includes('pdf') || q.includes('find') || q.includes('file')) {
+      intentStatusEl.textContent = 'PROVIDER: FILE_SEARCH_PROVIDER · ASK';
+      intentStatusEl.style.borderColor = '#9AD3BC';
+      intentStatusEl.style.color = '#9AD3BC';
+      intentJsonEl.textContent = JSON.stringify({
+        schema_version: "1.0",
+        intent: "SEARCH_FILES",
+        parameters: {
+          file_type: "pdf",
+          search_scope: "Local Storage & Downloads"
+        },
+        confidence: 0.95,
+        requires_confirmation: false,
+        mode: "ASK",
+        search_provider: "FileSearchProvider (Room SQLite)",
+        runtime: "Deterministic Provider Pipeline"
+      }, null, 2);
+    } else if (q.includes('calm') || q.includes('mode') || q.includes('work') || q.includes('focus')) {
+      intentStatusEl.textContent = 'STATE: SET_FOCUS_PROFILE · ASK';
+      intentStatusEl.style.borderColor = '#C3ADF4';
+      intentStatusEl.style.color = '#C3ADF4';
+      intentJsonEl.textContent = JSON.stringify({
+        schema_version: "1.0",
+        intent: "SET_FOCUS_PROFILE",
+        parameters: {
+          profile: "Calm",
+          filter_notifications: true,
+          adaptive_dock: ["OpenPause", "deMusic", "Journal"]
+        },
+        confidence: 0.99,
+        requires_confirmation: false,
+        mode: "ASK",
+        action_policy: "LAUNCHER_INTERNAL_STATE",
+        runtime: "Deterministic Fallback Router"
+      }, null, 2);
+    } else {
+      intentStatusEl.textContent = 'DETERMINISTIC RETRIEVAL (<100ms)';
+      intentStatusEl.style.borderColor = 'var(--champagne-base)';
+      intentStatusEl.style.color = 'var(--champagne-light)';
+      intentJsonEl.textContent = JSON.stringify({
+        schema_version: "1.0",
+        intent: "SEARCH_APP_OR_ENTITY",
+        parameters: {
+          query: q,
+          fuzzy_match: true
+        },
+        confidence: 1.0,
+        mode: "ASK",
+        runtime: "PackageManager & Deterministic Providers (0ms LLM)"
+      }, null, 2);
+    }
+  }
 
   function renderResults(query = '') {
     if (!resultsContainer) return;
 
+    updateIntentDisplay(query);
+
     const lowerQuery = query.toLowerCase().trim();
     const filtered = launcherData.filter(item => {
       const matchCat = (activeCategory === 'all') || (item.category === activeCategory) || (activeCategory === 'files' && item.category === 'files');
-      const matchText = !lowerQuery || item.title.toLowerCase().includes(lowerQuery) || item.subtitle.toLowerCase().includes(lowerQuery);
+      const matchText = !lowerQuery || item.title.toLowerCase().includes(lowerQuery) || item.subtitle.toLowerCase().includes(lowerQuery) || (lowerQuery.includes('dial') && item.id === 'arun') || (lowerQuery.includes('alarm') && item.id === 'alarm_6am') || (lowerQuery.includes('wifi') && item.id === 'wifi') || (lowerQuery.includes('calm') && item.id === 'calm_profile') || (lowerQuery.includes('pdf') && item.id === 'pdf_doc');
       return matchCat && matchText;
     });
 
@@ -261,6 +416,17 @@ function initDeLauncherSandbox() {
       renderResults(e.target.value);
     });
   }
+
+  presetChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const query = chip.getAttribute('data-query');
+      if (searchInput) {
+        searchInput.value = query;
+        searchInput.focus();
+      }
+      renderResults(query);
+    });
+  });
 
   filterChips.forEach(chip => {
     chip.addEventListener('click', () => {
